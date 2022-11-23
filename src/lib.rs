@@ -16,34 +16,28 @@ extern "C" {
     );
 }
 
-#[no_mangle]
-pub extern "C" fn lua_hello_world(_: *const c_void) -> c_int {
+unsafe extern "C" fn lua_hello_world(_: *const c_void) -> c_int {
     println!("Hello world!!");
     return 0;
 }
 
-#[no_mangle]
-pub extern "C" fn lua_add(L: *const c_void) -> c_int {
-    unsafe {
-        let x = luaL_checkinteger(L, 1);
-        let y = luaL_checkinteger(L, 2);
-        lua_pushinteger(L, x + y);
-    }
+unsafe extern "C" fn lua_add(L: *const c_void) -> c_int {
+    let x = luaL_checkinteger(L, 1);
+    let y = luaL_checkinteger(L, 2);
+    lua_pushinteger(L, x + y);
     return 1;
 }
 
 #[no_mangle]
-pub extern "C" fn luaopen_lua_rust(L: *const c_void) -> c_int {
-    unsafe {
-        lua_createtable(L, 0, 0);
+pub unsafe extern "C" fn luaopen_lua_rust(L: *const c_void) -> c_int {
+    lua_createtable(L, 0, 0);
 
-        lua_pushcclosure(L, lua_hello_world, 0);
-        let name = CString::new("hello_world").unwrap();
-        lua_setfield(L, -2, name.as_ptr());
+    lua_pushcclosure(L, lua_hello_world, 0);
+    let name = CString::new("hello_world").unwrap();
+    lua_setfield(L, -2, name.as_ptr());
 
-        lua_pushcclosure(L, lua_add, 0);
-        let name = CString::new("add").unwrap();
-        lua_setfield(L, -2, name.as_ptr());
-    }
+    lua_pushcclosure(L, lua_add, 0);
+    let name = CString::new("add").unwrap();
+    lua_setfield(L, -2, name.as_ptr());
     return 1;
 }
