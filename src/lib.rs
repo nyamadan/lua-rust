@@ -2,7 +2,7 @@
 
 use std::ffi::{c_char, c_int, c_void, CString};
 
-#[link(name = "./build/lib/lua544d", kind = "static")]
+#[link(name = "./build/lib/lua544d", kind = "dylib")]
 extern "C" {
     fn lua_setfield(L: *const c_void, idx: c_int, k: *const c_char);
     fn lua_createtable(L: *const c_void, narr: c_int, nrec: c_int);
